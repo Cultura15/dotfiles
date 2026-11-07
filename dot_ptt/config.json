@@ -1,0 +1,26 @@
+{
+  "hotkey": "RControlKey",
+  "minHoldMs": 250,
+  "maxRecordSeconds": 15,
+  "micDevice": -1,
+  "model": "models/ggml-base.en.bin",
+  "language": "en",
+  "threads": 4,
+  "beep": true,
+  "micOnSound": "sounds/mic-on.mp3",
+  "introSounds": [ "sounds/jarvis-intro-1.mp3", "sounds/jarvis-intro.mp3" ],
+  "injectChord": "Ctrl+Shift+F12",
+  "targetWindowClasses": [ "CASCADIA_HOSTING_WINDOW_CLASS", "ConsoleWindowClass" ],
+  "autoStart": true,
+  "voice": {
+    "enabled": true,
+    "engine": "sapi",
+    "name": "Microsoft David Desktop",
+    "rate": 0,
+    "volume": 100,
+    "robot": true,
+    "robotAmount": 0.6,
+    "piperExe": "piper/piper.exe",
+    "piperModel": "piper/en_GB-alan-medium.onnx"
+  }
+}

@@ -1,0 +1,5 @@
+bin/
+obj/
+piper/
+models/*.bin
+models/*.part
