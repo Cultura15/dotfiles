@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "pattern": "^src/.+\\.(ts|tsx|js|jsx)$",
+  "command": "npx eslint --no-warn-ignored {file}",
+  "timeoutSeconds": 50
+}

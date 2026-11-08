@@ -1,0 +1,15 @@
+# Inputs of the QA fingerprint (.claude/scripts/fingerprint.sh).
+# One git pathspec per line. A line starting with ! is excluded.
+# Rule: include everything TEST and REVIEW check (code, assets, build config);
+# exclude docs/, reports, and the plan, so writing a report or running /finish
+# never makes a PASS stale, but any code edit does.
+#
+# Default: the whole repo minus docs and workflow files. /build:setup narrows it,
+# e.g. for a Vite app:  src  public  scripts  index.html  package.json  vite.config.ts  tsconfig*.json  eslint.config.js
+.
+!docs
+!.claude
+!PLAN.md
+!CLAUDE.md
+!README.md
+!ai-workflow-kit
