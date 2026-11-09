@@ -7,7 +7,7 @@ ai-workflow-kit/
   install.sh          copies kit/ into a project (never overwrites unless --force)
   kit/                exactly what lands in the project root
     .claude/
-      commands/build/  subphase, phase, next, finish, setup
+      commands/build/  subphase, phase, fix, next, finish, setup
       commands/test/   qa-test
       commands/review/ qa-review
       commands/git/    commit, push, sync, undo
@@ -16,7 +16,7 @@ ai-workflow-kit/
       scripts/         fingerprint.sh, agent.sh, agent.cmd
       hooks/           lint-on-save.cjs (config-driven, off by default)
       workflow/        PROJECT.md (the profile), fingerprint.paths, lint-on-save.json,
-                       PLAN.template.md, CLAUDE.section.md
+                       PLAN.template.md, FIXES.template.md, CLAUDE.section.md
       settings.json    shared read-only allows and safety denies
       launch.json      dev (BUILD) + qa (TEST) servers for the desktop browser pane
     docs/
@@ -70,6 +70,23 @@ GIT     /commit 2b → /push   (bash .claude/scripts/agent.sh git)
 ```
 
 Full guide: `kit/docs/workflow.md`.
+
+## Immediate fixes (`/fix` and `FIXES.md`)
+
+For fixes and changes you want between phases without rewriting `PLAN.md`. Ask BUILD in chat for the fixes; it creates `FIXES.md` from `.claude/workflow/FIXES.template.md` (or appends a new batch): batches F1, F2, … of fixes `f1a`, `f1b`, … in the plan's sub-phase format, each batch with a **Blocks.** line naming the plan sub-phase it must land before.
+
+```
+BUILD   /fix                 (fixes board + preflight)
+BUILD   /fix f1a             (build the fix; again after a QA ❌ to fix the items)
+TEST    /qa-test f1a   +   REVIEW  /qa-review f1a
+BUILD   /finish f1a          (ticks FIXES.md section 3, Decisions log in FIXES.md section 4)
+GIT     /commit f1a          (fix-f1a: <summary>)
+```
+
+- While a batch has an unticked fix, `/subphase` and `/phase` refuse its Blocks sub-phase and every later one; `/next` shows fixes first and marks those plan parts blocked.
+- Where a fix and the plan disagree, the fix wins for what it touches.
+- The fixes file and its headings live in the profile's **Fixes** section. Projects installed before `/fix` existed keep their `PROJECT.md` on `--force` reinstall; the commands then use the defaults (`FIXES.md`, the template's layout), so nothing else is needed. Copy the Fixes section from `kit/.claude/workflow/PROJECT.md` only if you use a different file or headings.
+- If a project has no `FIXES.md`, nothing changes: the gate is skipped.
 
 ## Requirements
 

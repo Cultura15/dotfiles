@@ -11,15 +11,16 @@ The commands, roles, and permission files are generic. Everything project-specif
 - The plan file. If it does not exist, say so and offer to create it from `.claude/workflow/PLAN.template.md`. Do not invent phases; ask the user for them.
 - `CLAUDE.md`, `README.md`, `.claude/rules/*.md`, `.gitignore`.
 - The package / build files that exist: `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `Makefile`, `composer.json`, lint and test configs.
+- `FIXES.md` (or the project's fixes file), if it exists.
 - The current `.claude/workflow/PROJECT.md`, `.claude/workflow/fingerprint.paths`, `.claude/workflow/lint-on-save.json`, `.claude/launch.json`.
 
 ## 2. Map the plan
-Find, and quote back the exact headings for: the context section, hard rules, sub-phase heading format, the field names (Order, Owns, Deliverables, Hand-off contract, Acceptance or their equivalents), amendments, Status, Decisions log, model routing. If the plan lacks Status or a Decisions log, propose appending them (the plan is append-only; ask first). If sub-phases lack Owns or Acceptance, say the gate is weaker without them and ask whether to add them per phase later.
+Find, and quote back the exact headings for (and the same for `FIXES.md` if it exists): the context section, hard rules, sub-phase heading format, the field names (Order, Owns, Deliverables, Hand-off contract, Acceptance or their equivalents), amendments, Status, Decisions log, model routing. If the plan lacks Status or a Decisions log, propose appending them (the plan is append-only; ask first). If sub-phases lack Owns or Acceptance, say the gate is weaker without them and ask whether to add them per phase later.
 
 ## 3. Propose, then write
 Show the user one short table of every value you will write, marking guesses. After they confirm (or correct), write:
 
-1. **`.claude/workflow/PROJECT.md`**: every `<fill me>` replaced. Keep the section layout.
+1. **`.claude/workflow/PROJECT.md`**: every `<fill me>` replaced. Keep the section layout. Keep the Fixes section defaults unless the project already has a fixes file with other headings. Do not create `FIXES.md` here; `/fix` creates it from `.claude/workflow/FIXES.template.md` when the user asks for the first fix.
 2. **`.claude/workflow/fingerprint.paths`**: the code and build-config paths TEST and REVIEW check; exclude docs, reports, the plan, and `.claude`. Run `bash .claude/scripts/fingerprint.sh` and confirm it prints a 12-char hash.
 3. **`.claude/launch.json`**: a `dev` (BUILD) and a `qa` (TEST) configuration on two different ports, for the project's dev server. Remove it if the project has no server.
 4. **`.claude/workflow/lint-on-save.json`**: enable it with the project's single-file lint command and file pattern, or leave `enabled: false`. Test it on one file.

@@ -9,7 +9,7 @@ Hard limits (also enforced by `.claude/permissions/test.json` when you run in a 
 - In the Claude desktop app your permission file is not loaded, so these limits are yours to keep: write nothing but `test.md`, even where a tool would let you.
 
 How you judge:
-- The sub-phase's **Acceptance** lines in the plan are the test oracle. Each one becomes one check.
+- The sub-phase's **Acceptance** lines in the plan are the test oracle. Each one becomes one check. For a fix id (`f1a`, …) the oracle is the fix's **Acceptance** in the fixes file (default `FIXES.md`).
 - A check passes only when you observed it (command output, browser state, console, HTTP response). If you could not observe it, mark it ❌ "not verified: <reason>". Never guess a ✅.
 - Every ❌ has what you did, what you expected, what happened, and the likely file. No code suggestions beyond one line.
 - Be quick: one pass through the app, no extra measurements the command does not ask for.

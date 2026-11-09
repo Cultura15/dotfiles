@@ -25,6 +25,18 @@ Fill it with `/build:setup` (it reads your plan, CLAUDE.md, and package files an
 - **Model routing section:** <fill me — e.g. `## 7. Model routing`, or none>
 - **Append-only:** the original plan text never changes unless the user asks in chat. Only `/finish` appends Decisions entries and ticks Status.
 
+## Fixes
+
+Immediate fixes and changes between phases, run with `/fix`. Commands use these defaults if this section is missing.
+
+- **Fixes file:** `FIXES.md` (created from `.claude/workflow/FIXES.template.md` when the first fix is requested; "does not exist yet" is fine)
+- **Fix heading:** `### Fix <id> – <title> (<model>)`, batches `### Batch F<n> – <title>` with a `**Blocks.**` and `**Order.**` line
+- **Sections:** 0 Context and precedence · 1 How fixes run · 2 Batches · 3 Status · 4 Decisions log (entries: `- <YYYY-MM-DD>: Fix <id>. …`)
+- **Fix ids:** `f<batch><letter>` (`f1a`); a bare `f1` means the whole batch
+- **Blocking:** an open batch blocks its Blocks id and every later sub-phase in the plan's Status order
+- **Precedence:** where a fix and the plan disagree, the fix wins for what it touches
+- **Finish notes:** `docs/fix-<id>-<topic>.md`, only when needed
+
 ## Phase ids
 
 - Sub-phase ids are the ids in the plan headings: `<fill me — e.g. 0, 1, 2a, 2b, 3a>`.
@@ -82,6 +94,7 @@ What REVIEW checks besides the hard rules, in priority order:
 
 - Sub-phase finished: `phase-<id>: <summary>`
 - Fix round checkpoint: `phase-<id>-fix: <summary>`
+- Fix finished: `fix-<id>: <summary>` · fix round: `fix-<id>-fix: <summary>`
 - Other: `docs:`, `chore:`, `qa:`, `plan:`
 - Branch: <fill me — e.g. work on `main`, push to `origin`>
 

@@ -8,6 +8,7 @@ You are TEST. Read `.claude/roles/test.md` first and follow it (the desktop app 
 ## 1. Scope
 - Resolve the id per the profile's "Phase ids". A bare number covers every built sub-phase of that phase (a `build.md` exists); write to `docs/reports/<n>/test.md`.
 - Read the sub-phase's **Acceptance** and **Deliverables** (and its amendment if any), and `docs/reports/<id>/build.md` ("How to verify", "Deviations").
+- **Fix ids** (`f1a`, …; a bare `f1` = every built fix of batch F1): read `### Fix <id>` in the fixes file (profile → Fixes; default `FIXES.md`), plus its batch heading and sections 0–1, instead of the plan. Everything else in this command is the same. The fix-round hint at the end becomes `/fix <id>`.
 - Record HEAD short sha (plus "+ uncommitted" if dirty) as `commit`, and `bash .claude/scripts/fingerprint.sh` as `fingerprint`. If the fingerprint differs at the end, BUILD changed code during your run: say so and do not give PASS.
 - If `test.md` exists, this is round n+1: re-check the earlier ❌ items first.
 
@@ -28,4 +29,4 @@ Skip anything not listed: no performance measurements, bundle comparisons, or ac
 - `mkdir -p docs/reports/<id>`, write `docs/reports/<id>/test.md` from `docs/reports/_template/test.md`. `verdict: PASS` only if every check is ✅.
 - Print the Summary block from the report, then:
   - all ✅ → `Next: test passed for <id>. When REVIEW also passes, BUILD runs /finish <id>.`
-  - any ❌ → `Next: BUILD runs /subphase <id> to fix the ❌ items.`
+  - any ❌ → `Next: BUILD runs /subphase <id> to fix the ❌ items.` (for a fix id: `/fix <id>`)

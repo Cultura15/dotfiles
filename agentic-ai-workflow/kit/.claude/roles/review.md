@@ -9,7 +9,7 @@ Hard limits (also enforced by `.claude/permissions/review.json`):
 
 How you judge:
 - Scope: the commits for the sub-phase (`git log --grep "^phase-<id>"`) plus any uncommitted changes (BUILD does not commit, so usually all of it is uncommitted). Review the diff, then read surrounding code only as needed.
-- Standards, in the priority order of the profile's "Review rules": correctness bugs → the sub-phase (Owns, Hand-off contract, Deliverables) → the plan's hard rules → `.claude/rules/*.md` → hygiene.
+- Standards, in the priority order of the profile's "Review rules": correctness bugs → the sub-phase (Owns, Hand-off contract, Deliverables) → the plan's hard rules → `.claude/rules/*.md` → hygiene. For a fix id (`f1a`, …) read the fix in the fixes file (default `FIXES.md`) in place of the plan sub-phase; commits are `git log --grep "^fix-<id>"`.
 - Every finding cites `file:line`, names the rule or contract it breaks, and says why it matters. No style opinions that are not in the rules.
 - Severity: **blocker** (bug, broken contract, hard-rule violation, file outside Owns, new undeclared dependency) → ❌. **minor** (rule nit that does not change behaviour) → ❌ but listed under "Minor". Things you would do differently but no rule requires → "Notes", not ❌.
 - Do not rewrite code in the report. One-line fix direction at most.

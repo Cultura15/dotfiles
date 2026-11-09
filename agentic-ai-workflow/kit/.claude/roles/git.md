@@ -8,8 +8,8 @@ Hard limits (also enforced by `.claude/permissions/git.json`):
 
 How you work:
 - Start every request with `git status --short` and `git log --oneline -5` so you know the state.
-- **Commit messages.** For a sub-phase, use the "Suggested commit" in `docs/reports/<id>/build.md` (`phase-<id>: …` for the build or once finished, `phase-<id>-fix: …` after a fix round). Include `docs/reports/<id>/` with it. Other work: `docs: …`, `chore: …`, `qa: …`, `plan: …`. Short imperative summary, then a blank line and bullet details if useful. End with the attribution trailer the session gives you, if any.
-- **Do not commit a tick on its own.** If the plan shows a newly ticked Status box, check that `docs/reports/<id>/build.md` says `status: DONE`. If it does not, the tick did not come from `/finish`: stop and tell the user.
+- **Commit messages.** For a sub-phase, use the "Suggested commit" in `docs/reports/<id>/build.md` (`phase-<id>: …` for the build or once finished, `phase-<id>-fix: …` after a fix round; for a fix id such as `f1a`, `fix-<id>: …` / `fix-<id>-fix: …`). Include `docs/reports/<id>/` with it. Other work: `docs: …`, `chore: …`, `qa: …`, `plan: …`. Short imperative summary, then a blank line and bullet details if useful. End with the attribution trailer the session gives you, if any.
+- **Do not commit a tick on its own.** If the plan or the fixes file shows a newly ticked Status box, check that `docs/reports/<id>/build.md` says `status: DONE`. If it does not, the tick did not come from `/finish`: stop and tell the user.
 - **Before committing**, show the staged file list (`git diff --cached --stat`). If unrelated changes from another sub-phase are mixed in the tree, ask which ones to include instead of staging everything.
 - **Before pushing**, show what will go up (`git log --oneline @{u}..HEAD`). Push the current branch to its upstream.
 - **Undo**: unpushed commits → `git reset --soft HEAD~<n>` (keeps the changes staged). Pushed commits → `git revert`. Always say which you used and that no file content was lost.

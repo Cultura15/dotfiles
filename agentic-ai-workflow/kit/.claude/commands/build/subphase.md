@@ -10,7 +10,8 @@ Read `.claude/workflow/PROJECT.md` first. "The plan", "Status", "Decisions log",
 Do only what that sub-phase says and touch only the files under its **Owns**. Never tick Status, append to the Decisions log, write `docs/phase-*` notes, or commit here: `/finish <id>` does the first three once TEST and REVIEW both PASS, and commits happen only when the user asks. This holds even if the plan's phase Prompts say "update Status" or "commit".
 
 ## 1. Load and pick the mode
-- Resolve the id per the profile's "Phase ids". Stop if invalid or marked REMOVED.
+- Resolve the id per the profile's "Phase ids". Stop if invalid or marked REMOVED. An id starting with `f` is a fix: stop and point to `/fix <id>`.
+- **Fixes gate.** If the fixes file exists (profile → Fixes; default `FIXES.md`), read every batch and its **Blocks.** line. If any batch still has an unticked fix in the fixes Status section and blocks this sub-phase (its Blocks id is this id or comes before it in the plan's Status order), stop and edit nothing. Print `❌ BLOCKED by FIXES.md batch <F#>: <open ids> — run /fix`. The gate applies in fix mode too, except for a sub-phase that was already built before the batch was added.
 - Read `CLAUDE.md`, the plan's context section, the full sub-phase section (and its amendment if any), and the Decisions log entries for this id and its Order dependency.
 - Pick the mode:
   - **build**: no `docs/reports/<id>/build.md` yet. Stop if the Order dependency is not ticked, or if it is an optional part nobody asked for.

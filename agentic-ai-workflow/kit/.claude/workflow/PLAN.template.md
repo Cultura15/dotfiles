@@ -114,4 +114,4 @@ Append only. One entry per decision or finished sub-phase: `- <YYYY-MM-DD>: Phas
 
 ## 10. Agentic workflow
 
-BUILD / TEST / REVIEW / GIT loop, see `docs/workflow.md`. Project profile: `.claude/workflow/PROJECT.md`.
+BUILD / TEST / REVIEW / GIT loop, see `docs/workflow.md`. Project profile: `.claude/workflow/PROJECT.md`. Immediate fixes between phases go in `FIXES.md` (from `.claude/workflow/FIXES.template.md`), run with `/fix`; an open fix batch blocks the sub-phase on its Blocks line and every later one.

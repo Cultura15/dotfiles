@@ -30,8 +30,9 @@ Commands live in `.claude/commands/<agent>/`, so their full names are `/build:su
 | BUILD | `/setup [plan]` | Adapt the workflow to this project: fill the profile, fingerprint paths, dev servers, lint hook, protected-path denies, CLAUDE.md section. Run once after installing. |
 | BUILD | `/subphase <id>` | Build one sub-phase and write `build.md`. If QA already failed it, fix the ❌ items instead. |
 | BUILD | `/phase <n>` | Build every remaining sub-phase of phase n in Order. |
-| BUILD | `/next` | Show where every sub-phase stands, preflight the next ready part. No edits. |
-| BUILD | `/finish <id>` | Gate: test + review PASS on the current fingerprint, else refuse. Then Decisions log, docs, Status tick, `build.md` DONE. |
+| BUILD | `/fix [id]` | Immediate fixes from `FIXES.md`. No id: fixes board + preflight. With an id (`f1a`, or a batch `f1`): build it, or fix its QA ❌ items. |
+| BUILD | `/next` | Show where every fix and sub-phase stands (fixes first, blocked plan parts marked), preflight the next ready part. No edits. |
+| BUILD | `/finish <id>` | Gate: test + review PASS on the current fingerprint, else refuse. Then Decisions log, docs, Status tick (in `FIXES.md` for `f` ids), `build.md` DONE. |
 | TEST | `/qa-test <id\|n>` | Profile checks, then each Acceptance line (browser, CLI, or API per the profile). Writes `test.md`. |
 | REVIEW | `/qa-review <id\|n>` | Static checks, Owns, contract, hard rules, correctness, hygiene. Writes `review.md`. |
 | GIT | `/commit [id\|"msg"]` | Commit; with an id uses `build.md`'s suggested message and that sub-phase's files. |
@@ -39,7 +40,22 @@ Commands live in `.claude/commands/<agent>/`, so their full names are `/build:su
 | GIT | `/undo [n]` | Undo the last n commits: soft reset if unpushed, revert if pushed. |
 | GIT | `/sync` | Fetch and fast-forward pull. |
 
-Ids: `2b` or `2.2` for a sub-phase, `2` for a whole phase. Use `/clear` between sub-phases to keep context small.
+Ids: `2b` or `2.2` for a sub-phase, `2` for a whole phase, `f1a` for a fix, `f1` for a fix batch. Use `/clear` between sub-phases to keep context small.
+
+## Immediate fixes (`FIXES.md`)
+
+The plan stays the main plan. Fixes and changes you want before the next phase go in `FIXES.md` (start it from `.claude/workflow/FIXES.template.md`, or ask BUILD to), in the same format: batches (F1, F2, …) of fixes (`f1a`, `f1b`, …), each with Model, Order, Problem, Goal, Owns, Deliverables, Hand-off contract, Acceptance, and Prompt.
+
+```
+ BUILD /fix f1a ─▶ TEST /qa-test f1a  +  REVIEW /qa-review f1a
+ any ❌ → /fix f1a again          both ✅ → /finish f1a → GIT /commit f1a
+```
+
+- **Blocking.** Each batch has a **Blocks.** line naming a plan sub-phase. While any fix in the batch is unticked, `/subphase` and `/phase` refuse that sub-phase and every later one, and `/next` shows them as blocked.
+- **Precedence.** Where a fix and the plan disagree, the fix wins for what it touches.
+- **Same gate.** `/finish f1a` checks the same test/review PASS and fingerprint, then ticks `FIXES.md` section 3 and appends to `FIXES.md` section 4. Reports live in `docs/reports/f1a/`. Commits are `fix-f1a: …` (and `fix-f1a-fix: …` for a fix round).
+- **New fixes.** Ask BUILD in chat to add a batch. It appends a new batch at the end of `FIXES.md` section 2 with its Blocks line, and adds its Status lines. Nothing is built until you run `/fix`.
+- `/fix` with no id shows just the fixes board.
 
 ## Starting the agents
 
@@ -109,6 +125,7 @@ Next: BUILD runs /subphase 2b to fix the ❌ items.
 | `.claude/workflow/lint-on-save.json` | **yes** | Lint command for the BUILD save hook (off by default) |
 | `.claude/launch.json` | **yes** | `dev` (BUILD) and `qa` (TEST) dev servers for the desktop browser pane |
 | `.claude/workflow/PLAN.template.md` | template | Plan skeleton with the sections the workflow expects |
+| `.claude/workflow/FIXES.template.md` | template | Skeleton for `FIXES.md` (immediate fixes between phases) |
 | `.claude/workflow/CLAUDE.section.md` | template | Workflow section `/setup` appends to CLAUDE.md |
 | `.claude/commands/**`, `.claude/roles/*.md` | no | Commands and role prompts |
 | `.claude/permissions/*.json`, `.claude/settings.json` | partly | Generic denies; `/setup` adds the project's protected paths |

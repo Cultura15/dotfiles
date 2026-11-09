@@ -9,7 +9,11 @@ This is the **only** command that ticks a Status box in the plan, appends a sub-
 
 ## 1. Gate (refuse unless every check is ✅)
 
-Resolve the id per the profile's "Phase ids". A whole phase (`2`) is not accepted unless it is itself a sub-phase: finish each sub-phase on its own. Then check:
+Resolve the id per the profile's "Phase ids". A whole phase (`2`) or fix batch (`f1`) is not accepted unless it is itself a sub-phase: finish each sub-phase or fix on its own.
+
+**Fix ids (`f1a`, `f2b`, …)** go through the same gate and steps against the **fixes file** (profile → Fixes; default `FIXES.md`) instead of the plan: G1 looks for `### Fix <id>`, G2 and the tick use the fixes Status section, G8 uses the fix's **Order** line, the Decisions entry goes at the end of the fixes Decisions log (`- <date>: Fix <id>. …`), docs are `docs/fix-<id>-<topic>.md`, and the final diff check is `git diff -- <fixes file>`. After ticking, if that fix was the last open one in its batch, add a line to the report: `Batch <F#> complete — plan <Blocks id> is unblocked.`
+
+Then check:
 
 | # | Check | How |
 |---|---|---|
@@ -58,5 +62,5 @@ FINISH <id> · ✅ DONE
   ✅ Decisions appended
   ✅ Docs      docs/phase-<id>-<topic>.md   (or "none needed")
 
-Not committed. Next →  GIT: /commit <id>   then BUILD: /next
+Not committed. Next →  GIT: /commit <id>   then BUILD: /next  (or /fix for the next fix)
 ```
