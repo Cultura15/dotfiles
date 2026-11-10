@@ -56,6 +56,19 @@ done < <(find "$kit" -type f -print0 | sort -z)
 
 chmod +x "$target/.claude/scripts/"*.sh 2>/dev/null || true
 
+# settings.json is project-specific and never replaced, so add the themed status line to an older one.
+settings="$target/.claude/settings.json"
+status_cmd='powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/statusline.ps1'
+if [ -f "$settings" ] && ! grep -q '"statusLine"' "$settings"; then
+  if command -v node >/dev/null 2>&1; then
+    node -e 'const fs=require("fs");const p=process.argv[1];const j=JSON.parse(fs.readFileSync(p,"utf8"));j.statusLine={type:"command",command:process.argv[2]};fs.writeFileSync(p,JSON.stringify(j,null,2)+"\n")' "$settings" "$status_cmd"
+    echo "  updated   .claude/settings.json (+ statusLine for the themed agent status bars)"
+  else
+    echo "  note      add this to .claude/settings.json to get the themed status bars:"
+    echo "            \"statusLine\": { \"type\": \"command\", \"command\": \"$status_cmd\" }"
+  fi
+fi
+
 # Personal settings mirror for BUILD, git-ignored.
 if [ ! -e "$target/.claude/settings.local.json" ]; then
   cp "$target/.claude/permissions/build.json" "$target/.claude/settings.local.json"

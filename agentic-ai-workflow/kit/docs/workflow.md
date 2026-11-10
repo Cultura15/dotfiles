@@ -93,7 +93,9 @@ bash .claude/scripts/agent.sh review
 bash .claude/scripts/agent.sh git
 ```
 
-From cmd or PowerShell use `.claude\scripts\agent.cmd review` (or `git`, `test`). A second argument overrides the model: `agent.sh review claude-opus-5-5`.
+From PowerShell use `.\.claude\scripts\agent.ps1 review` (or `git`, `test`): it also themes the status line (TEST mono bars, REVIEW shiny bars, GIT commit rail). `agent.cmd` works from cmd and sets the same role. A second argument overrides the model: `agent.ps1 review claude-opus-5-5`.
+
+Any agent can run the read-only `/check` (list of phases and fixes with mandatory/optional labels) and `/check <id>` (full detail of one phase or fix).
 
 Name the terminal tabs `TEST`, `REVIEW`, and `GIT`.
 
@@ -129,7 +131,7 @@ Next: BUILD runs /subphase 2b to fix the ❌ items.
 | `.claude/workflow/CLAUDE.section.md` | template | Workflow section `/setup` appends to CLAUDE.md |
 | `.claude/commands/**`, `.claude/roles/*.md` | no | Commands and role prompts |
 | `.claude/permissions/*.json`, `.claude/settings.json` | partly | Generic denies; `/setup` adds the project's protected paths |
-| `.claude/scripts/fingerprint.sh`, `agent.sh`, `agent.cmd` | no | Fingerprint and agent launchers |
+| `.claude/scripts/fingerprint.sh`, `agent.sh`, `agent.cmd`, `agent.ps1`, `statusline.ps1` | no | Fingerprint and agent launchers |
 | `.claude/hooks/lint-on-save.cjs` | no | PostToolUse hook (needs Node) |
 | `docs/reports/_template/*`, `docs/reports/README.md` | no | Report templates |
 

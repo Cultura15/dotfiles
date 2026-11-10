@@ -12,6 +12,9 @@ You are TEST. Read `.claude/roles/test.md` first and follow it (the desktop app 
 - Record HEAD short sha (plus "+ uncommitted" if dirty) as `commit`, and `bash .claude/scripts/fingerprint.sh` as `fingerprint`. If the fingerprint differs at the end, BUILD changed code during your run: say so and do not give PASS.
 - If `test.md` exists, this is round n+1: re-check the earlier ❌ items first.
 
+## 1b. Live progress (drives the status line)
+Your terminal status line reads `docs/reports/<id>/test.md`. Right after Scope, before running anything, write the report skeleton: frontmatter with `verdict: RUNNING`, and the Checks table with every check you can already name (static ones, plus one row per Acceptance line, plus Regression) as `| T<n> | … | <source> | ⏳ | |`. Then update the file after each group (static, then Acceptance, then Regression) and replace each ⏳ with ✅ or ❌ as you observe it. At the end no ⏳ may remain and `verdict` is PASS or FAIL. `/finish` only accepts `verdict: PASS`, so RUNNING never counts as a pass.
+
 ## 2. Checks (number them T1, T2, …)
 1. **Static**: the profile's Build, Lint, Extra, and Unit tests checks (skip any marked `none`). If the build fails, record it and skip to step 3.
 2. **Acceptance**: one check per Acceptance line (split compound lines). Quote it.
@@ -27,6 +30,7 @@ Skip anything not listed: no performance measurements, bundle comparisons, or ac
 
 ## 3. Report
 - `mkdir -p docs/reports/<id>`, write `docs/reports/<id>/test.md` from `docs/reports/_template/test.md`. `verdict: PASS` only if every check is ✅.
+- Fill the Summary's four bars (Progress, Passed, Failed, Blocked) with the final percentages, 10 cells of `▰`/`▱`.
 - Print the Summary block from the report, then:
   - all ✅ → `Next: test passed for <id>. When REVIEW also passes, BUILD runs /finish <id>.`
   - any ❌ → `Next: BUILD runs /subphase <id> to fix the ❌ items.` (for a fix id: `/fix <id>`)

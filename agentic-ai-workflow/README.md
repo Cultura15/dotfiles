@@ -11,9 +11,10 @@ ai-workflow-kit/
       commands/test/   qa-test
       commands/review/ qa-review
       commands/git/    commit, push, sync, undo
+      commands/check.md  /check and /check <id> (read-only, every agent)
       roles/           build, test, review, git role prompts
       permissions/     build, test, review, git settings files
-      scripts/         fingerprint.sh, agent.sh, agent.cmd
+      scripts/         fingerprint.sh, agent.sh, agent.cmd, agent.ps1, statusline.ps1
       hooks/           lint-on-save.cjs (config-driven, off by default)
       workflow/        PROJECT.md (the profile), fingerprint.paths, lint-on-save.json,
                        PLAN.template.md, FIXES.template.md, CLAUDE.section.md
@@ -87,6 +88,34 @@ GIT     /commit f1a          (fix-f1a: <summary>)
 - Where a fix and the plan disagree, the fix wins for what it touches.
 - The fixes file and its headings live in the profile's **Fixes** section. Projects installed before `/fix` existed keep their `PROJECT.md` on `--force` reinstall; the commands then use the defaults (`FIXES.md`, the template's layout), so nothing else is needed. Copy the Fixes section from `kit/.claude/workflow/PROJECT.md` only if you use a different file or headings.
 - If a project has no `FIXES.md`, nothing changes: the gate is skipped.
+
+## Agent terminal themes (PowerShell)
+
+Start the terminal agents from PowerShell; each gets its own status line (Windows PowerShell 5.1 and PowerShell 7 both work):
+
+```powershell
+.\.claude\scripts\agent.ps1 test      # mono (grayscale) bars
+.\.claude\scripts\agent.ps1 review    # shiny truecolor gradient bars
+.\.claude\scripts\agent.ps1 git       # branch, sync gauge, commit rail, tree counts
+```
+
+`agent.ps1` sets `CLAUDE_AGENT_ROLE`, the tab title, and a banner; `.claude/settings.json` points `statusLine` at `statusline.ps1`, which picks the theme from that variable.
+
+| Agent | Bars (percentage on the right) | Source |
+|---|---|---|
+| TEST (mono) | Progress · Passed · Failed · Blocked/not verified, plus plan and fixes bars | newest `docs/reports/*/test.md` |
+| REVIEW (shiny) | Progress · Passed · Blockers · Minor, `✦` at 100%, rainbow header on PASS, `⚠` on blockers | newest `docs/reports/*/review.md` |
+| GIT | `⎇ branch ⇡ahead ⇣behind`, commit rail `◉━●━●` colored by `phase-` / `fix-` / `docs` / `qa` / `chore`, staged / modified / untracked / stash counts, `⚑ ready to commit` ids, red banner on merge/rebase/conflicts | git |
+
+Bars move live: `/qa-test` and `/qa-review` write the report first with `verdict: RUNNING` and ⏳ rows, then tick them as they work. `/finish` only accepts `verdict: PASS`, so a running report never passes the gate. The fresh/stale marker needs Git Bash (for `fingerprint.sh`); without it the marker shows `? fp`. Report row shapes in `_template/` are what the status line parses, so keep them.
+
+On macOS/Linux swap `powershell` for `pwsh` in the `statusLine` command. The desktop app has no status line; there the Summary blocks carry the same bars as text (`▰▱` for TEST, 🟩🟥🟨⬜ for REVIEW).
+
+## `/check` (read-only, every agent)
+
+- `/check` lists every plan sub-phase and fix, in Status order, with a **mandatory / optional** label and a state (done, finish, QA pending, blocked, ready, waiting, skipped, removed), plus plan and fixes progress bars and the next command.
+- `/check <id>` (`2b`, `f1a`, or a bare `2` / `f1`) prints the detail card: done and not-yet-done deliverables, Acceptance with TEST results, open REVIEW findings, round and fingerprint freshness, Owns files, deviations, gaps, commits, Decisions entries, and the exact next command.
+- Plan items are optional when their Order line has the optional marker; fixes are mandatory when their batch **Blocks.** a plan id. The command only reads and may run `git status`, `git log`, and `fingerprint.sh`.
 
 ## Requirements
 

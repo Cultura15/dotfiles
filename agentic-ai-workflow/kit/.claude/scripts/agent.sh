@@ -10,6 +10,10 @@ cd "$(dirname "$0")/../.."
 role="${1:-}"
 model="${2:-claude-sonnet-5-5}"
 
+# The status line theme (mono TEST, shiny REVIEW, GIT rail) is picked from this variable.
+export CLAUDE_AGENT_ROLE="$role"
+printf '\033]0;%s\007' "$(echo "$role" | tr '[:lower:]' '[:upper:]')"
+
 case "$role" in
   review) exec claude --model "$model" --settings .claude/permissions/review.json --append-system-prompt-file .claude/roles/review.md ;;
   git)    exec claude --model "$model" --setting-sources user,project --settings .claude/permissions/git.json --append-system-prompt-file .claude/roles/git.md ;;
